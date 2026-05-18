@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -26,30 +24,12 @@ class Tarefa {
   String titulo;
   String descricao;
   bool concluida;
-  DateTime dataCriacao;
 
   Tarefa({
     required this.titulo,
     required this.descricao,
     this.concluida = false,
-    DateTime? dataCriacao,
-  }) : dataCriacao = dataCriacao ?? DateTime.now();
-
-  Map<String, dynamic> toJson() => {
-    'titulo': titulo,
-    'descricao': descricao,
-    'concluida': concluida,
-    'dataCriacao': dataCriacao.toIso8601String(),
-  };
-
-  factory Tarefa.fromJson(Map<String, dynamic> json) {
-    return Tarefa(
-      titulo: json['titulo'],
-      descricao: json['descricao'],
-      concluida: json['concluida'],
-      dataCriacao: DateTime.parse(json['dataCriacao']),
-    );
-  }
+  });
 }
 
 class TarefasPage extends StatefulWidget {
@@ -61,58 +41,23 @@ class TarefasPage extends StatefulWidget {
 
 class _TarefasPageState extends State<TarefasPage> {
   List<Tarefa> _tarefas = [];
-  final String _arquivoSalvamento = 'tarefas.json';
-
-  @override
-  void initState() {
-    super.initState();
-    _carregarTarefas();
-  }
-
-  Future<void> _carregarTarefas() async {
-    try {
-      final arquivo = File(_arquivoSalvamento);
-      if (await arquivo.exists()) {
-        final conteudo = await arquivo.readAsString();
-        final listaJson = jsonDecode(conteudo) as List;
-        setState(() {
-          _tarefas = listaJson.map((json) => Tarefa.fromJson(json)).toList();
-        });
-      }
-    } catch (e) {
-      debugPrint('Erro ao carregar: $e');
-    }
-  }
-
-  Future<void> _salvarTarefas() async {
-    try {
-      final arquivo = File(_arquivoSalvamento);
-      final listaJson = _tarefas.map((t) => t.toJson()).toList();
-      await arquivo.writeAsString(jsonEncode(listaJson));
-    } catch (e) {
-      debugPrint('Erro ao salvar: $e');
-    }
-  }
 
   void _adicionarTarefa(String titulo, String descricao) {
     setState(() {
       _tarefas.add(Tarefa(titulo: titulo, descricao: descricao));
     });
-    _salvarTarefas();
   }
 
   void _alternarConcluida(int index) {
     setState(() {
       _tarefas[index].concluida = !_tarefas[index].concluida;
     });
-    _salvarTarefas();
   }
 
   void _removerTarefa(int index) {
     setState(() {
       _tarefas.removeAt(index);
     });
-    _salvarTarefas();
   }
 
   void _mostrarDialogAdicionar() {
@@ -130,7 +75,7 @@ class _TarefasPageState extends State<TarefasPage> {
               TextField(
                 controller: tituloController,
                 decoration: const InputDecoration(
-                  hintText: 'Título da tarefa',
+                  hintText: 'Título',
                   icon: Icon(Icons.title),
                 ),
               ),
@@ -165,36 +110,13 @@ class _TarefasPageState extends State<TarefasPage> {
     );
   }
 
-  int get _totalConcluidas => _tarefas.where((t) => t.concluida).length;
-  double get _progresso => _tarefas.isEmpty ? 0 : _totalConcluidas / _tarefas.length;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Organizador de Tarefas'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Minhas Tarefas'),
+        backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        actions: [
-          if (_tarefas.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  '${(_progresso * 100).toStringAsFixed(0)}%',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: LinearProgressIndicator(
-            value: _progresso,
-            backgroundColor: Colors.white30,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-          ),
-        ),
       ),
       body: _tarefas.isEmpty
           ? Center(
