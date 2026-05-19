@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Organizador de Tarefas',
+      title: 'Minhas Tarefas',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Classe da Tarefa (simplificada)
 class Tarefa {
   String titulo;
   String descricao;
@@ -32,6 +33,7 @@ class Tarefa {
   });
 }
 
+// Tela Principal
 class TarefasPage extends StatefulWidget {
   const TarefasPage({super.key});
 
@@ -42,24 +44,38 @@ class TarefasPage extends StatefulWidget {
 class _TarefasPageState extends State<TarefasPage> {
   List<Tarefa> _tarefas = [];
 
+  // Adicionar tarefa
   void _adicionarTarefa(String titulo, String descricao) {
     setState(() {
       _tarefas.add(Tarefa(titulo: titulo, descricao: descricao));
     });
+    
+    // SnackBar - Widget de feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Tarefa adicionada!')),
+    );
   }
 
+  // Alternar concluída
   void _alternarConcluida(int index) {
     setState(() {
       _tarefas[index].concluida = !_tarefas[index].concluida;
     });
   }
 
+  // Remover tarefa
   void _removerTarefa(int index) {
     setState(() {
       _tarefas.removeAt(index);
     });
+    
+    // SnackBar - Widget de feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Tarefa removida!')),
+    );
   }
 
+  // Diálogo para adicionar tarefa
   void _mostrarDialogAdicionar() {
     final tituloController = TextEditingController();
     final descricaoController = TextEditingController();
@@ -125,14 +141,14 @@ class _TarefasPageState extends State<TarefasPage> {
                 children: [
                   Icon(Icons.check_circle_outline, size: 80, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text(
+                  const Text(
                     'Nenhuma tarefa',
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    style: TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  const Text(
                     'Toque no + para adicionar',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                    style: TextStyle(fontSize: 14),
                   ),
                 ],
               ),
@@ -151,7 +167,6 @@ class _TarefasPageState extends State<TarefasPage> {
                     title: Text(
                       tarefa.titulo,
                       style: TextStyle(
-                        fontSize: 16,
                         decoration: tarefa.concluida ? TextDecoration.lineThrough : null,
                         color: tarefa.concluida ? Colors.grey : Colors.black,
                       ),
@@ -169,7 +184,15 @@ class _TarefasPageState extends State<TarefasPage> {
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => _removerTarefa(index),
                     ),
-                    onTap: () => _alternarConcluida(index),
+                    // NAVEGAÇÃO: ao clicar, abre a tela de detalhes
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetalhesPage(tarefa: tarefa),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
@@ -177,6 +200,73 @@ class _TarefasPageState extends State<TarefasPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _mostrarDialogAdicionar,
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+// TELA DE DETALHES (Navegação)
+class DetalhesPage extends StatelessWidget {
+  final Tarefa tarefa;
+
+  const DetalhesPage({super.key, required this.tarefa});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(tarefa.titulo),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              child: ListTile(
+                leading: Icon(
+                  tarefa.concluida ? Icons.check_circle : Icons.radio_button_unchecked,
+                  color: tarefa.concluida ? Colors.green : Colors.grey,
+                ),
+                title: Text(
+                  tarefa.titulo,
+                  style: TextStyle(
+                    fontSize: 20,
+                    decoration: tarefa.concluida ? TextDecoration.lineThrough : null,
+                  ),
+                ),
+                subtitle: Text(
+                  tarefa.concluida ? 'Concluída' : 'Pendente',
+                  style: TextStyle(
+                    color: tarefa.concluida ? Colors.green : Colors.orange,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Descrição',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      tarefa.descricao.isEmpty ? 'Sem descrição' : tarefa.descricao,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
