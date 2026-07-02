@@ -29,12 +29,14 @@ class Tarefa {
   String titulo;
   String descricao;
   bool concluida;
+  DateTime dataCriacao;
 
   Tarefa({
     required this.titulo,
     required this.descricao,
     this.concluida = false,
-  });
+    DateTime? dataCriacao,
+  }) : dataCriacao = dataCriacao ?? DateTime.now();
 }
 
 // ==========================
@@ -76,9 +78,9 @@ class _TarefasPageState extends State<TarefasPage> {
   // ==========================
 
   void _adicionarTarefa(
-      String titulo,
-      String descricao,
-      ) {
+    String titulo,
+    String descricao,
+  ) {
     setState(() {
       _tarefas.add(
         Tarefa(
@@ -99,7 +101,7 @@ class _TarefasPageState extends State<TarefasPage> {
   void _alternarConcluida(int index) {
     setState(() {
       _tarefas[index].concluida =
-      !_tarefas[index].concluida;
+          !_tarefas[index].concluida;
     });
   }
 
@@ -136,8 +138,7 @@ class _TarefasPageState extends State<TarefasPage> {
               SizedBox(width: 10),
               Text("Nova Tarefa"),
             ],
-          ),
-          content: Column(
+          ),           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
@@ -146,8 +147,7 @@ class _TarefasPageState extends State<TarefasPage> {
                   labelText: "Título",
                   prefixIcon: const Icon(Icons.title),
                   border: OutlineInputBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -159,11 +159,9 @@ class _TarefasPageState extends State<TarefasPage> {
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: "Descrição",
-                  prefixIcon:
-                  const Icon(Icons.description),
+                  prefixIcon: const Icon(Icons.description),
                   border: OutlineInputBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -204,13 +202,13 @@ class _TarefasPageState extends State<TarefasPage> {
 
   @override
   Widget build(BuildContext context) {
-
-        return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text("Minhas Tarefas"),
         centerTitle: true,
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        elevation: 5,
       ),
 
       body: Column(
@@ -247,8 +245,7 @@ class _TarefasPageState extends State<TarefasPage> {
                 const SizedBox(height: 18),
 
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
 
                     Column(
@@ -268,8 +265,9 @@ class _TarefasPageState extends State<TarefasPage> {
                         ),
                         const Text(
                           "Total",
-                          style:
-                              TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -291,8 +289,9 @@ class _TarefasPageState extends State<TarefasPage> {
                         ),
                         const Text(
                           "Feitas",
-                          style:
-                              TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -314,8 +313,9 @@ class _TarefasPageState extends State<TarefasPage> {
                         ),
                         const Text(
                           "Pendentes",
-                          style:
-                              TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -325,13 +325,11 @@ class _TarefasPageState extends State<TarefasPage> {
                 const SizedBox(height: 20),
 
                 ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
                     value: porcentagemConclusao,
                     minHeight: 10,
-                    backgroundColor:
-                        Colors.white30,
+                    backgroundColor: Colors.white30,
                   ),
                 ),
 
@@ -348,17 +346,10 @@ class _TarefasPageState extends State<TarefasPage> {
             ),
           ),
 
-          // ==========================
-          // LISTA
-          // ==========================
-
           Expanded(
             child: AnimatedSwitcher(
-              duration:
-                  const Duration(milliseconds: 500),
-
-              child: _tarefas.isEmpty
-
+              duration: const Duration(milliseconds: 500),
+                            child: _tarefas.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment:
@@ -377,8 +368,7 @@ class _TarefasPageState extends State<TarefasPage> {
                             "Nenhuma tarefa",
                             style: TextStyle(
                               fontSize: 22,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
 
@@ -390,20 +380,18 @@ class _TarefasPageState extends State<TarefasPage> {
                         ],
                       ),
                     )
-
                   : ListView.builder(
                       itemCount: _tarefas.length,
                       itemBuilder: (context, index) {
-
                         final tarefa = _tarefas[index];
 
                         return AnimatedContainer(
                           duration: const Duration(
-                            milliseconds: 350,
+                            milliseconds: 500,
                           ),
+                          curve: Curves.easeInOut,
 
-                          margin:
-                              const EdgeInsets.symmetric(
+                          margin: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 6,
                           ),
@@ -415,65 +403,71 @@ class _TarefasPageState extends State<TarefasPage> {
                             borderRadius:
                                 BorderRadius.circular(16),
                             boxShadow: [
-
                               BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.15),
+                                color: Colors.grey.withOpacity(0.15),
                                 blurRadius: 6,
-                                offset:
-                                    const Offset(0, 3),
+                                offset: const Offset(0, 3),
                               ),
-
                             ],
                           ),
 
                           child: ListTile(
-
-                            leading: Checkbox(
-                              value:
-                                  tarefa.concluida,
-                              onChanged: (_) {
-                                _alternarConcluida(
-                                    index);
-                              },
+                            leading: Icon(
+                              tarefa.concluida
+                                  ? Icons.check_circle
+                                  : Icons.radio_button_unchecked,
+                              color: tarefa.concluida
+                                  ? Colors.green
+                                  : Colors.grey,
                             ),
 
                             title: Text(
                               tarefa.titulo,
                               style: TextStyle(
-                                fontWeight:
-                                    FontWeight.bold,
-                                decoration:
-                                    tarefa.concluida
-                                        ? TextDecoration
-                                            .lineThrough
-                                        : null,
+                                fontWeight: FontWeight.bold,
+                                decoration: tarefa.concluida
+                                    ? TextDecoration.lineThrough
+                                    : null,
                               ),
                             ),
 
-                            subtitle:
-                                tarefa.descricao.isEmpty
-                                    ? null
-                                    : Text(
-                                        tarefa.descricao,
-                                      ),
+                            subtitle: tarefa.descricao.isEmpty
+                                ? null
+                                : Text(
+                                    tarefa.descricao,
+                                  ),
 
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                _removerTarefa(index);
-                              },
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Checkbox(
+                                  value: tarefa.concluida,
+                                  activeColor: Colors.indigo,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(5),
+                                  ),
+                                  onChanged: (_) {
+                                    _alternarConcluida(index);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    _removerTarefa(index);
+                                  },
+                                ),
+                              ],
                             ),
 
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      DetalhesPage(
+                                  builder: (_) => DetalhesPage(
                                     tarefa: tarefa,
                                   ),
                                 ),
@@ -488,18 +482,16 @@ class _TarefasPageState extends State<TarefasPage> {
         ],
       ),
 
-      floatingActionButton:
-          FloatingActionButton.extended(
-
-        backgroundColor: Colors.indigo,
-
-        foregroundColor: Colors.white,
-
-        onPressed: _mostrarDialogAdicionar,
-
-        icon: const Icon(Icons.add),
-
-        label: const Text("Nova tarefa"),
+      floatingActionButton: AnimatedScale(
+        duration: const Duration(milliseconds: 300),
+        scale: 1,
+        child: FloatingActionButton.extended(
+          backgroundColor: Colors.indigo,
+          foregroundColor: Colors.white,
+          onPressed: _mostrarDialogAdicionar,
+          icon: const Icon(Icons.add),
+          label: const Text("Nova tarefa"),
+        ),
       ),
     );
   }
@@ -524,6 +516,7 @@ class DetalhesPage extends StatelessWidget {
         title: Text(tarefa.titulo),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        elevation: 5,
       ),
 
       body: SingleChildScrollView(
@@ -600,11 +593,8 @@ class DetalhesPage extends StatelessWidget {
 
                     const Row(
                       children: [
-
                         Icon(Icons.description),
-
                         SizedBox(width: 8),
-
                         Text(
                           "Descrição",
                           style: TextStyle(
@@ -627,6 +617,29 @@ class DetalhesPage extends StatelessWidget {
                         fontSize: 17,
                       ),
                     ),
+
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 18,
+                          color: Colors.indigo,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Criada em: "
+                          "${tarefa.dataCriacao.day.toString().padLeft(2, '0')}/"
+                          "${tarefa.dataCriacao.month.toString().padLeft(2, '0')}/"
+                          "${tarefa.dataCriacao.year}",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -637,14 +650,18 @@ class DetalhesPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back_ios_new),
                 label: const Text("Voltar"),
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  foregroundColor: Colors.white,
+                  elevation: 5,
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
                   ),
-                  backgroundColor: Colors.indigo,
-                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.pop(context);
