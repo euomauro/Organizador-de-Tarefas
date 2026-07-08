@@ -103,6 +103,16 @@ class _TarefasPageState extends State<TarefasPage> {
       _tarefas[index].concluida =
           !_tarefas[index].concluida;
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Text(
+      _tarefas[index].concluida
+          ? "Tarefa concluída!"
+          : "Tarefa marcada como pendente!",
+    ),
+    duration: const Duration(seconds: 2),
+  ),
+);
   }
 
   void _removerTarefa(int index) {
@@ -183,9 +193,9 @@ class _TarefasPageState extends State<TarefasPage> {
                 }
 
                 _adicionarTarefa(
-                  tituloController.text,
-                  descricaoController.text,
-                );
+                    tituloController.text.trim(),
+                    descricaoController.text.trim(),
+                  );
 
                 Navigator.pop(context);
               },
@@ -431,11 +441,11 @@ class _TarefasPageState extends State<TarefasPage> {
                               ),
                             ),
 
-                            subtitle: tarefa.descricao.isEmpty
-                                ? null
-                                : Text(
-                                    tarefa.descricao,
-                                  ),
+                            subtitle: Text(
+                                  tarefa.descricao.isEmpty
+                                      ? "Sem descrição."
+                                      : tarefa.descricao,
+                                ),
 
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -486,6 +496,7 @@ class _TarefasPageState extends State<TarefasPage> {
         duration: const Duration(milliseconds: 300),
         scale: 1,
         child: FloatingActionButton.extended(
+          elevation: 6,
           backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
           onPressed: _mostrarDialogAdicionar,
