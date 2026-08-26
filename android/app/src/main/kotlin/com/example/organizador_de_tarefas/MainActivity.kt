@@ -1,4 +1,4 @@
-package com.example.meu_app
+package com.example.organizador_de_tarefas
 
 import io.flutter.embedding.android.FlutterActivity
 

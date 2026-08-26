@@ -1,6 +1,6 @@
 {
-    "name": "meu_app",
-    "short_name": "meu_app",
+    "name": "organizador_de_tarefas",
+    "short_name": "organizador_de_tarefas",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

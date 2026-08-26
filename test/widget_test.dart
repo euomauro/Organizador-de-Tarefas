@@ -1,38 +1,30 @@
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:meu_app/main.dart';
+
+import 'package:organizador_de_tarefas/main.dart';
 
 void main() {
-  testWidgets('App inicializa corretamente', (WidgetTester tester) async {
-    // Build our app and trigger a frame
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verifica se o título está presente
-    expect(find.text('Organizador de Tarefas'), findsOneWidget);
-    
-    // Verifica se a mensagem de "Nenhuma tarefa" aparece
-    expect(find.text('Nenhuma tarefa'), findsOneWidget);
-    
-    // Verifica se o botão de adicionar existe
-    expect(find.byType(FloatingActionButton), findsOneWidget);
-  });
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
 
-  testWidgets('Adicionar nova tarefa', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    // Clica no botão de adicionar
-    await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
-
-    // Preenche o formulário
-    await tester.enterText(find.widgetWithText(TextField, 'Título da tarefa'), 'Estudar Flutter');
-    await tester.enterText(find.widgetWithText(TextField, 'Descrição'), 'Aprender a fazer apps');
-    
-    // Clica em adicionar
-    await tester.tap(find.text('Adicionar'));
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // Verifica se a tarefa foi adicionada
-    expect(find.text('Estudar Flutter'), findsOneWidget);
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
   });
 }
