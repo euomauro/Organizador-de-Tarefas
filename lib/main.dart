@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'pages/splash_page.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +17,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.indigo,
       ),
-      home: const SplashPage(),
+      // o app agora começa pela SplashScreen, que depois manda
+      // o usuário para a TarefasPage
+      home: const SplashScreen(),
     );
   }
 }
