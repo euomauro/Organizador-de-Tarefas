@@ -1,6 +1,6 @@
 {
-    "name": "organizador_de_tarefas_02",
-    "short_name": "organizador_de_tarefas_02",
+    "name": "organizatarefas",
+    "short_name": "organizatarefas",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
